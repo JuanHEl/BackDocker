@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        container_name: "${PROJECT_NAME}_nginx"
+        restart: always
+        ports:
+            - "${HTTP_PORT}:80"
+            - "${SSL_PORT}:443"
+        volumes:
+            - ./html:/var/www/html
+            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./.docker/certs:/etc/ssl
+        links:
+            - php
+        networks:
+            - LEMP
+        restart: always
+    php:
+        build: ./.docker/php
+        container_name: "${PROJECT_NAME}_php"
+        restart: always
+        volumes:
+            - ./.docker/php/files/php.ini-production:/usr/local/etc/php/php.ini
+            - ./html:/var/www/html
+        expose:
+            - "9000"       
+        networks:
+            - LEMP
+        depends_on: 
+            - db
+        restart: always
+    db:
+        image: mariadb
+        container_name: "${PROJECT_NAME}_db"
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
+            MYSQL_DATABASE: "${DB_NAME}"
+            MYSQL_USER: "${DB_USER}"
+        ports:
+            - "${DB_PORT_EXT}:3306"
+        networks:
+            - LEMP
+        volumes:
+            - ./init/BaseDatos1TT:/docker-entrypoint-initdb.d
+            # - ./.docker/mysql:/var/lib/mysql
+        restart: always
+    db2:
+        image: mariadb
+        container_name: "${PROJECT_NAME}_db2"
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: "${COMMENTS_PASSWORD}"
+            MYSQL_DATABASE: "${COMMENTS_DATABASE}"
+            MYSQL_USER: "${COMMENTS_USERNAME}"
+        ports:
+            - "${COMMENTS_PORT}:3306"
+        networks:
+            - LEMP
+        volumes:
+            - ./init/BaseDatos2TT:/docker-entrypoint-initdb.d
+            # - ./.docker/mysql:/var/lib/mysql
+        restart: always
+    redis:
+        image: 'redis:alpine'
+        container_name: "${PROJECT_NAME}_redis"
+        restart: always
+        ports:
+            - "${FORWARD_REDIS_PORT}:6379"
+        networks:
+            - LEMP
+        volumes:
+            - ./.docker/redis:/data
+        restart: always
+        
+networks:
+    LEMP:
