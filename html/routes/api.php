@@ -101,3 +101,6 @@ Route::put('updateperfil','App\Http\Controllers\AdministradorController@cambiapa
 Route::get('dipositivo','App\Http\Controllers\DatosDispoController@index');
 Route::get('snmp','App\Http\Controllers\DatosSNMPController@index');
 Route::post('python','App\Http\Controllers\PythonController@index');
+Route::post('scriptconfigrouter','App\Http\Controllers\PythonController@router');
+Route::post('scriptconfigswitch','App\Http\Controllers\PythonController@switch');
+Route::post('scriptconfigservidor','App\Http\Controllers\PythonController@servidor');

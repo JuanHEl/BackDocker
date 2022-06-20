@@ -31,38 +31,6 @@ services:
         depends_on: 
             - db
         restart: always
-    db:
-        image: mariadb
-        container_name: "${PROJECT_NAME}_db"
-        restart: always
-        environment:
-            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
-            MYSQL_DATABASE: "${DB_NAME}"
-            MYSQL_USER: "${DB_USER}"
-        ports:
-            - "${DB_PORT_EXT}:3306"
-        networks:
-            - LEMP
-        volumes:
-            - ./init/BaseDatos1TT:/docker-entrypoint-initdb.d
-            # - ./.docker/mysql:/var/lib/mysql
-        restart: always
-    db2:
-        image: mariadb
-        container_name: "${PROJECT_NAME}_db2"
-        restart: always
-        environment:
-            MYSQL_ROOT_PASSWORD: "${COMMENTS_PASSWORD}"
-            MYSQL_DATABASE: "${COMMENTS_DATABASE}"
-            MYSQL_USER: "${COMMENTS_USERNAME}"
-        ports:
-            - "${COMMENTS_PORT}:3306"
-        networks:
-            - LEMP
-        volumes:
-            - ./init/BaseDatos2TT:/docker-entrypoint-initdb.d
-            # - ./.docker/mysql:/var/lib/mysql
-        restart: always
     redis:
         image: 'redis:alpine'
         container_name: "${PROJECT_NAME}_redis"
